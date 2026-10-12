@@ -211,10 +211,10 @@
       "title": "Test fewer Redis versions on pull requests",
       "pattern": "Full matrix on every PR",
       "problem": "Every PR push tested against 9 Redis server versions, 234 test jobs per run.",
-      "fix": "PRs test 3 versions: the preview, current stable and oldest supported. Pushes to master and release branches, plus nightly, still run all 9.",
-      "measured": "Oct 5 to 12, 547 runs: the 6 dropped versions were 39.6% of PR CI minutes (sampled 82 runs, all attempts).",
-      "estimatedMinPerWeek": 173000,
-      "pctOfRepo": 29
+      "fix": "PRs test 5 versions: the preview, the three latest releases and the oldest supported, which is the set the maintainer chose in review. Pushes to master and release branches, plus nightly, still run all 9.",
+      "measured": "Oct 5 to 12, 547 runs: each dropped version was ~6.6% of PR CI minutes (sampled 82 runs, all attempts). Dropping 4 of 9 saves ~26% of PR CI.",
+      "estimatedMinPerWeek": 115000,
+      "pctOfRepo": 19
     },
     {
       "repo": "trycua/cua",
