@@ -31,6 +31,7 @@ type Finding = {
   fix?: string
   measured?: string
   estimatedMinPerWeek?: number
+  pctOfRepo?: number
   validated?: string
   note?: string
 }
@@ -91,8 +92,23 @@ const heldLabel: Record<string, { text: string; variant: LabelProps['variant'] }
 }
 
 const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; prState?: PrState }) => {
-  const { repo, workflow, pr, branch, issue, title, pattern, problem, fix, measured, estimatedMinPerWeek, validated, note, status } =
-    finding
+  const {
+    repo,
+    workflow,
+    pr,
+    branch,
+    issue,
+    title,
+    pattern,
+    problem,
+    fix,
+    measured,
+    estimatedMinPerWeek,
+    pctOfRepo,
+    validated,
+    note,
+    status,
+  } = finding
   const href = pr ? `https://github.com/${repo}/pull/${pr}` : branch
 
   return (
@@ -129,6 +145,7 @@ const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; pr
         </Text>
         <Stack direction="horizontal" wrap="wrap" gap="condensed">
           {estimatedMinPerWeek && <Label variant="success">~{fmt(estimatedMinPerWeek)} job-min/week (est.)</Label>}
+          {pctOfRepo && <Label variant="success">~{pctOfRepo}% of the repo's CI minutes</Label>}
           {validated && <Label variant="accent">Fork-validated</Label>}
         </Stack>
         <Text as="p" size="small" className={styles.muted}>
