@@ -96,10 +96,10 @@
       "status": "held",
       "title": "Hourly main CI is almost always red",
       "pattern": "Failure loop",
-      "problem": "Hourly main CI failed 182 of 183 runs in a week. Cutting the cadence would break their PR gate, which uses it as a baseline.",
-      "fix": "Fix the flake first. A smaller side fix moves Hourly Extension Tests to every 3 hours.",
+      "problem": "Hourly main CI failed 182 of 183 runs in a week. The biggest single cause is the full-tree dead-code gate (knip), which failed 97 times in about 8 on/off streaks: it doesn’t run on PRs, so unused code lands and gets patched by hand on main. The rest is about 30 unrelated test regressions and flakes.",
+      "fix": "Run the full-tree knip check on PRs so dead code is caught before merge. That’s a maintainer cost and policy call, not a drive-by PR.",
       "measured": "Oct 4 to 12: 183 scheduled runs, 182 failed, 187,765 rounded runner-min.",
-      "note": "Held. This needs a diagnosis, not a CI tweak."
+      "note": "Diagnosed, not shipped. openclaw’s CONTRIBUTING auto-closes PRs that only fix failures already red on main, and their own revert of an earlier “Actions-run savings” PR showed the skipped runs were free."
     },
     {
       "repo": "withastro/astro",
