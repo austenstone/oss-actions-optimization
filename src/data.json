@@ -88,7 +88,7 @@
       "fix": "Fall back to uv's own test:skip mode on stack layers unless a label opts in.",
       "measured": "Oct 4 to 10: all 1,277 PR CI runs, 58% of them cancelled.",
       "estimatedMinPerWeek": 106000,
-      "note": "Held. uv runs CI on every stack layer on purpose, so this is the maintainers' call."
+      "note": "Ready on a branch. uv’s contribution policy asks for PRs written and opened by a human, so Austen will open this one himself."
     },
     {
       "repo": "openclaw/openclaw",
