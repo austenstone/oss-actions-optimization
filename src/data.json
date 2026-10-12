@@ -67,7 +67,7 @@
     {
       "repo": "SocketDev/socket-patch",
       "workflow": ".github/workflows/ci.yml",
-      "status": "blocked",
+      "status": "fixed",
       "branch": "https://github.com/SocketDev/socket-patch/compare/main...austenstone:socket-patch:ci-full-tier-nightly",
       "title": "Run the full test tier nightly, as the header says",
       "pattern": "Nightly work on every push",
@@ -75,8 +75,9 @@
       "fix": "Gate the 3 full-tier jobs on schedule and workflow_dispatch, the same condition a sibling job already uses.",
       "measured": "Oct 10 to 11: the full tier was 79% of push jobs (1,845 of 2,330).",
       "estimatedMinPerWeek": 12300,
-      "note": "Only collaborators can open PRs on this repo, so we filed an issue linking the ready branch.",
-      "issue": 1414
+      "note": "Maintainers confirmed it and moved the full e2e tier to nightly.",
+      "issue": 1414,
+      "fixedBy": 1415
     },
     {
       "repo": "astral-sh/uv",
@@ -214,7 +215,12 @@
       "fix": "PRs test 5 versions: the preview, the three latest releases and the oldest supported, which is the set the maintainer chose in review. Pushes to master and release branches, plus nightly, still run all 9.",
       "measured": "Oct 5 to 12, 547 runs: each dropped version was ~6.6% of PR CI minutes (sampled 82 runs, all attempts). Dropping 4 of 9 saves ~26% of PR CI.",
       "estimatedMinPerWeek": 115000,
-      "pctOfRepo": 19
+      "pctOfRepo": 19,
+      "response": {
+        "quote": "I agree the PR matrix is bigger than it needs to be. We have discussed the same approach internally as well.",
+        "author": "petyaslavova",
+        "url": "https://github.com/redis/redis-py/pull/4421#pullrequestreview-5488921510"
+      }
     },
     {
       "repo": "trycua/cua",
@@ -301,7 +307,12 @@
       "fix": "A 20-minute job timeout.",
       "measured": "Sep 27 to Oct 10: ~11.5k min/week in hung jobs.",
       "estimatedMinPerWeek": 11500,
-      "note": "Maintainers confirmed the numbers (9 pushes, 63 jobs at the limit) and fixed the logging root cause on Oct 11; the timeout is the backstop."
+      "note": "Maintainers confirmed the numbers (9 pushes, 63 jobs at the limit) and fixed the logging root cause on Oct 11; the timeout is the backstop.",
+      "response": {
+        "quote": "Your numbers match ours, with 9 pushes and 63 jobs hitting the 6-hour limit.",
+        "author": "peterbanda",
+        "url": "https://github.com/cequence-io/openai-scala-client/pull/129#issuecomment-6120996608"
+      }
     },
     {
       "repo": "googleapis/google-cloud-java",
@@ -325,7 +336,12 @@
       "problem": "The publish_with_expiration quickcheck property test hangs until the 6-hour limit.",
       "fix": "A 10-minute step timeout.",
       "measured": "Sep 27 to Oct 10: ~6k min/week in hung jobs.",
-      "estimatedMinPerWeek": 6000
+      "estimatedMinPerWeek": 6000,
+      "response": {
+        "quote": "Testing with timeouts is always difficult so we should probably have something like this.",
+        "author": "snichme",
+        "url": "https://github.com/cloudamqp/lavinmq/pull/2426#issuecomment-6119825956"
+      }
     },
     {
       "repo": "floccusaddon/floccus",

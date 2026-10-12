@@ -76,3 +76,9 @@
 .card p {
   margin: 0;
 }
+
+.quote {
+  margin: 0;
+  padding-left: var(--base-size-12);
+  border-left: var(--borderWidth-thicker) solid var(--borderColor-success-emphasis);
+}

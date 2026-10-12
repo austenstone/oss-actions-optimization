@@ -12,11 +12,16 @@ import {
   Text,
   Timeline,
 } from '@primer/react'
-import { type ReactNode, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import styles from './App.module.css'
 import data from './data.json'
+import prState from './pr-state.json'
 
-type Status = 'pr' | 'blocked' | 'held' | 'scanning'
+type Status = 'pr' | 'blocked' | 'held' | 'fixed' | 'scanning'
+
+type Response = { quote: string; author: string; url: string }
+
+type PrSync = { status: 'open' | 'merged' | 'closed' | 'draft'; review: 'approved' | 'changes' | null }
 
 type Finding = {
   repo: string
@@ -34,6 +39,8 @@ type Finding = {
   pctOfRepo?: number
   validated?: string
   note?: string
+  response?: Response
+  fixedBy?: number
 }
 
 type PrState = StateLabelProps['status']
@@ -45,15 +52,25 @@ const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 
 
 const byImpact = (a: Finding, b: Finding) => (b.estimatedMinPerWeek ?? 0) - (a.estimatedMinPerWeek ?? 0)
 
-const prs = findings.filter(({ status }) => status === 'pr').sort(byImpact)
-const held = findings.filter(({ status }) => status === 'held' || status === 'blocked').sort(byImpact)
+const prStates = prState.prs as Record<string, PrSync>
+const syncOf = ({ repo }: Finding): PrSync => prStates[repo] ?? { status: 'open', review: null }
+
+const statusRank: Record<PrSync['status'], number> = { merged: 0, open: 1, draft: 1, closed: 2 }
+const byProgress = (a: Finding, b: Finding) => statusRank[syncOf(a).status] - statusRank[syncOf(b).status] || byImpact(a, b)
+
+const prs = findings.filter(({ status }) => status === 'pr').sort(byProgress)
+const held = findings.filter(({ status }) => ['held', 'blocked', 'fixed'].includes(status)).sort(byImpact)
 const scanning = findings.filter(({ status }) => status === 'scanning')
-const shippedMinPerWeek = prs.reduce((sum, { estimatedMinPerWeek }) => sum + (estimatedMinPerWeek ?? 0), 0)
+const sumMinutes = (list: Finding[]) => list.reduce((sum, { estimatedMinPerWeek }) => sum + (estimatedMinPerWeek ?? 0), 0)
+const merged = prs.filter((f) => syncOf(f).status === 'merged')
+const approved = prs.filter((f) => syncOf(f).status === 'open' && syncOf(f).review === 'approved')
 
-type PullResponse = { merged_at: string | null; state: string; draft: boolean }
-
-const toPrState = ({ merged_at, state, draft }: PullResponse): PrState =>
-  merged_at ? 'pullMerged' : state === 'closed' ? 'pullClosed' : draft ? 'draft' : 'pullOpened'
+const prStatus: Record<PrSync['status'], PrState> = {
+  open: 'pullOpened',
+  merged: 'pullMerged',
+  closed: 'pullClosed',
+  draft: 'draft',
+}
 
 const prStateText: Partial<Record<PrState, string>> = {
   pullOpened: 'Open',
@@ -62,36 +79,18 @@ const prStateText: Partial<Record<PrState, string>> = {
   draft: 'Draft',
 }
 
-const fetchPrState = async ({ repo, pr }: Finding) => {
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}/pulls/${pr}`)
-    if (!res.ok) return null
-    return [repo, toPrState((await res.json()) as PullResponse)] as const
-  } catch {
-    return null
-  }
-}
-
-const usePrStates = () => {
-  const [states, setStates] = useState<Record<string, PrState>>({})
-
-  useEffect(() => {
-    const load = async () => {
-      const entries = await Promise.all(prs.map(fetchPrState))
-      setStates(Object.fromEntries(entries.filter((e) => e !== null)))
-    }
-    load()
-  }, [])
-
-  return states
+const reviewLabel: Record<NonNullable<PrSync['review']>, { text: string; variant: LabelProps['variant'] }> = {
+  approved: { text: 'Approved', variant: 'success' },
+  changes: { text: 'Changes requested', variant: 'attention' },
 }
 
 const heldLabel: Record<string, { text: string; variant: LabelProps['variant'] }> = {
   blocked: { text: 'Blocked', variant: 'severe' },
   held: { text: 'Held', variant: 'attention' },
+  fixed: { text: 'Fixed upstream', variant: 'done' },
 }
 
-const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; prState?: PrState }) => {
+const FindingCard = ({ finding }: { finding: Finding }) => {
   const {
     repo,
     workflow,
@@ -108,8 +107,13 @@ const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; pr
     validated,
     note,
     status,
+    response,
+    fixedBy,
   } = finding
   const href = pr ? `https://github.com/${repo}/pull/${pr}` : branch
+  const sync = syncOf(finding)
+  const prState = prStatus[sync.status]
+  const review = sync.status === 'open' && sync.review ? reviewLabel[sync.review] : null
 
   return (
     <div className={styles.card}>
@@ -126,8 +130,10 @@ const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; pr
             <Text weight="semibold">{repo}</Text>
           </Link>
           <span className={styles.mono}>{workflow}</span>
+          {review && <Label variant={review.variant}>{review.text}</Label>}
           {pattern && <Label variant="secondary">{pattern}</Label>}
           {issue && <Link href={`https://github.com/${repo}/issues/${issue}`}>Issue #{issue}</Link>}
+          {fixedBy && <Link href={`https://github.com/${repo}/pull/${fixedBy}`}>Fix #{fixedBy}</Link>}
         </Stack>
         <Heading as="h3" variant="small">
           {href ? (
@@ -153,6 +159,14 @@ const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; pr
           {validated && ` ${validated}`}
           {note && ` ${note}`}
         </Text>
+        {response && (
+          <blockquote className={styles.quote}>
+            <Text as="p">“{response.quote}”</Text>
+            <Text size="small" className={styles.muted}>
+              <Link href={response.url}>@{response.author}, maintainer</Link>
+            </Text>
+          </blockquote>
+        )}
       </Stack>
     </div>
   )
@@ -191,14 +205,11 @@ const rules = [
 ]
 
 const App = () => {
-  const prStates = usePrStates()
-  const merged = Object.values(prStates).filter((s) => s === 'pullMerged').length
-
   const stats = [
     [`${prs.length}`, 'PRs opened'],
-    [`${merged}`, 'merged'],
-    [`${findings.length}`, 'repos scanned'],
-    [`~${fmt(shippedMinPerWeek)}`, 'job-min/week in open PRs (est.)'],
+    [`${merged.length}`, 'merged'],
+    [`${approved.length}`, 'approved, awaiting merge'],
+    [`~${fmt(sumMinutes(merged))}`, 'job-min/week saved by merged PRs (est.)'],
   ]
 
   return (
@@ -227,12 +238,12 @@ const App = () => {
       <Section title="Pull requests">
         <Stack gap="normal">
           {prs.map((f) => (
-            <FindingCard key={f.repo} finding={f} prState={prStates[f.repo]} />
+            <FindingCard key={f.repo} finding={f} />
           ))}
         </Stack>
       </Section>
 
-      <Section title="Found, not shipped">
+      <Section title="Found, not shipped by us">
         <Stack gap="normal">
           {held.map((f) => (
             <FindingCard key={f.repo} finding={f} />
@@ -275,7 +286,7 @@ const App = () => {
       </Section>
 
       <Text as="p" size="small" className={`${styles.section} ${styles.muted}`}>
-        Updated {data.updated}. PR states load live from the GitHub API. Source:{' '}
+        Updated {data.updated}. PR states synced {prState.syncedAt.slice(0, 16).replace('T', ' ')} UTC. Source:{' '}
         <Link href={REPO_URL}>austenstone/oss-actions-optimization</Link>
       </Text>
     </main>

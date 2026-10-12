@@ -1,0 +1,125 @@
+{
+  "syncedAt": "2026-10-12T16:59:35.110Z",
+  "prs": {
+    "payloadcms/payload": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "vercel/next.js": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "trinodb/trino": {
+      "status": "open",
+      "review": "changes",
+      "mergedAt": null
+    },
+    "shadcn-ui/ui": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "oven-sh/bun": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "withastro/astro": {
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-12T11:53:37Z"
+    },
+    "metabase/metabase": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "apache/airflow": {
+      "status": "open",
+      "review": "changes",
+      "mergedAt": null
+    },
+    "microsoft/aspire": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "DataDog/system-tests": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "heygen-com/hyperframes": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "cloudposse/atmos": {
+      "status": "open",
+      "review": "approved",
+      "mergedAt": null
+    },
+    "commonwarexyz/monorepo": {
+      "status": "open",
+      "review": "approved",
+      "mergedAt": null
+    },
+    "redis/redis-py": {
+      "status": "open",
+      "review": "changes",
+      "mergedAt": null
+    },
+    "trycua/cua": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "DataDog/dd-trace-py": {
+      "status": "open",
+      "review": "approved",
+      "mergedAt": null
+    },
+    "swiftlang/github-workflows": {
+      "status": "open",
+      "review": "approved",
+      "mergedAt": null
+    },
+    "apple/swift-nio": {
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-12T09:52:17Z"
+    },
+    "vimeo/psalm": {
+      "status": "merged",
+      "review": null,
+      "mergedAt": "2026-10-12T07:54:16Z"
+    },
+    "cyberbotics/webots_ros2": {
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-12T06:23:05Z"
+    },
+    "cequence-io/openai-scala-client": {
+      "status": "merged",
+      "review": null,
+      "mergedAt": "2026-10-12T08:56:46Z"
+    },
+    "googleapis/google-cloud-java": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "cloudamqp/lavinmq": {
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-12T09:43:59Z"
+    },
+    "floccusaddon/floccus": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    }
+  }
+}
