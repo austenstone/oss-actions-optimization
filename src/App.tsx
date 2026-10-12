@@ -24,6 +24,7 @@ type Finding = {
   workflow?: string
   pr?: number
   branch?: string
+  issue?: number
   title?: string
   pattern?: string
   problem?: string
@@ -90,7 +91,7 @@ const heldLabel: Record<string, { text: string; variant: LabelProps['variant'] }
 }
 
 const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; prState?: PrState }) => {
-  const { repo, workflow, pr, branch, title, pattern, problem, fix, measured, estimatedMinPerWeek, validated, note, status } =
+  const { repo, workflow, pr, branch, issue, title, pattern, problem, fix, measured, estimatedMinPerWeek, validated, note, status } =
     finding
   const href = pr ? `https://github.com/${repo}/pull/${pr}` : branch
 
@@ -110,6 +111,7 @@ const FindingCard = ({ finding, prState = 'pullOpened' }: { finding: Finding; pr
           </Link>
           <span className={styles.mono}>{workflow}</span>
           {pattern && <Label variant="secondary">{pattern}</Label>}
+          {issue && <Link href={`https://github.com/${repo}/issues/${issue}`}>Issue #{issue}</Link>}
         </Stack>
         <Heading as="h3" variant="small">
           {href ? (

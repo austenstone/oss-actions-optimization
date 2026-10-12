@@ -75,7 +75,8 @@
       "fix": "Gate the 3 full-tier jobs on schedule and workflow_dispatch, the same condition a sibling job already uses.",
       "measured": "Oct 10 to 11: the full tier was 79% of push jobs (1,845 of 2,330).",
       "estimatedMinPerWeek": 12300,
-      "note": "Only collaborators can open PRs on this repo. The branch is ready."
+      "note": "Only collaborators can open PRs on this repo, so we filed an issue linking the ready branch.",
+      "issue": 1414
     },
     {
       "repo": "astral-sh/uv",
