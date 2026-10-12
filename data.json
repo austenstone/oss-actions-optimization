@@ -112,8 +112,25 @@
       "estimatedMinPerWeek": 250,
       "note": "Held. Astro's CI is already tight, and this one is small."
     },
-    { "repo": "metabase/metabase", "status": "scanning" },
-    { "repo": "apache/airflow", "status": "scanning" },
-    { "repo": "microsoft/aspire", "status": "scanning" }
+    {
+      "repo": "metabase/metabase",
+      "status": "scanning"
+    },
+    {
+      "repo": "apache/airflow",
+      "status": "scanning"
+    },
+    {
+      "repo": "microsoft/aspire",
+      "workflow": ".github/workflows/auto-rerun-transient-ci-failures.yml",
+      "status": "held",
+      "title": "Cap blind auto-reruns at one",
+      "pattern": "Retry loop",
+      "problem": "A temporary workflow reruns the failed jobs of every failed PR CI run up to 3 times. Most runs that reach attempt 4 still fail on the same jobs, so the reruns only delay a red signal.",
+      "fix": "Allow one blind rerun instead of three.",
+      "measured": "Oct 4 to 11: 58 of 599 CI runs reached attempt 4 and 46 still failed. In 8 of 9 sampled runs, the same jobs failed on every attempt.",
+      "estimatedMinPerWeek": 2100,
+      "note": "Held. About 32 runs a week recover on rerun 2 or 3, so this trades minutes for manual reruns."
+    }
   ]
 }
