@@ -297,10 +297,11 @@
       "pr": 129,
       "title": "Add a 20-minute timeout to the CI build jobs",
       "pattern": "Jobs hung to the 6h limit",
-      "problem": "A streaming test never returns after a 503, so builds ran to the 6-hour limit.",
+      "problem": "Wire specs logged multi-MB stream frames at DEBUG, and the runner spent hours processing the log, so builds ran to the 6-hour limit.",
       "fix": "A 20-minute job timeout.",
       "measured": "Sep 27 to Oct 10: ~11.5k min/week in hung jobs.",
-      "estimatedMinPerWeek": 11500
+      "estimatedMinPerWeek": 11500,
+      "note": "Maintainers confirmed the numbers (9 pushes, 63 jobs at the limit) and fixed the logging root cause on Oct 11; the timeout is the backstop."
     },
     {
       "repo": "googleapis/google-cloud-java",
@@ -358,13 +359,13 @@
       "workflow": ".github/workflows/daily_test.yml",
       "status": "blocked",
       "issue": 3065,
-      "title": "Daily HGraph concurrent-add test hangs until the 6-hour limit",
+      "title": "Daily HGraph tests run until the 6-hour limit",
       "pattern": "Jobs hung to the 6h limit",
-      "problem": "A deadlock in the daily HGraph Concurrent Add test means the nightly hasn't passed in 400 runs.",
-      "fix": "Fix the deadlock, and bound the job with a timeout once maintainers give a runtime estimate.",
+      "problem": "The daily HGraph suite keeps getting cancelled at the limit. A maintainer investigation found no deadlock: hidden test-section replay multiplies the workload about 4x.",
+      "fix": "Remove the section replay while keeping every assertion, then add a timeout sized to the real runtime.",
       "measured": "Sep 27 to Oct 10: ~7.7k min/week in hung jobs.",
       "estimatedMinPerWeek": 7700,
-      "note": "Filed as an issue because the right timeout needs a maintainer estimate."
+      "note": "Filed as an issue; a maintainer picked it up and is investigating."
     },
     {
       "repo": "sgl-project/sglang",
