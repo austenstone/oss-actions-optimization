@@ -17,7 +17,7 @@ Agents use the public [actions-optimization skill](https://github.com/austenston
 
 ## Update the report
 
-All content lives in [`data.json`](data.json). Add or edit an entry in `findings`:
+All content lives in [`src/data.json`](src/data.json). Add or edit an entry in `findings`:
 
 ```json
 {
@@ -34,15 +34,18 @@ All content lives in [`data.json`](data.json). Add or edit an entry in `findings
 }
 ```
 
-`status` is one of `pr`, `blocked`, `held` or `scanning`. Bump `updated`, then push to `main`. GitHub Pages deploys from the root of `main`.
+`status` is one of `pr`, `blocked`, `held` or `scanning`. Optional fields: `branch` (link when there's no PR), `validated`, `note`. Bump `updated`, then push to `main`. The [Deploy Pages](.github/workflows/pages.yml) workflow builds and publishes it.
 
-Preview locally:
+Preview locally (Node 20+):
 
 ```sh
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
 
-Then open http://localhost:8000.
+Then open http://localhost:5173/oss-actions-optimization/.
+
+The page is built with [Primer React](https://primer.style/product/getting-started/react/) and Vite.
 
 ## Data rules
 

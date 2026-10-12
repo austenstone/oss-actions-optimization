@@ -114,11 +114,28 @@
     },
     {
       "repo": "metabase/metabase",
-      "status": "scanning"
+      "workflow": ".github/workflows/embedding-sdk-host-sample-apps-tests.yml",
+      "status": "pr",
+      "pr": 84129,
+      "title": "Run SDK compatibility tests on the production bundle only in PRs",
+      "pattern": "Duplicate matrix legs",
+      "problem": "A non-required SDK compatibility suite runs every host and sample app twice on every PR, once with the production bundle and once with the development bundle. The dev bundle almost never fails on its own.",
+      "fix": "PRs run the production legs only. Pushes to master still run both bundles.",
+      "measured": "In 107 sampled PR runs, the dev-bundle legs cost about 35 rounded min per run. The dev bundle failed while prod passed in 1 of 593 pairs.",
+      "estimatedMinPerWeek": 23000
     },
     {
       "repo": "apache/airflow",
-      "status": "scanning"
+      "workflow": ".github/workflows/basic-tests.yml",
+      "status": "pr",
+      "pr": 74566,
+      "title": "Run shared distribution tests in a single CI job",
+      "pattern": "Tiny matrix legs",
+      "problem": "A 14-leg matrix runs one tiny test suite per shared distribution on every PR. Each leg takes about 20s, mostly checkout and uv install, and asks for 14 of the 20 concurrent jobs Apache allows per workflow.",
+      "fix": "One job loops over the distributions and fails if any of them fail.",
+      "measured": "Oct 5 to 11, sampled every 8th of 1,971 runs: these legs were 20.6% of all jobs, and 98.7% finished in under a minute.",
+      "estimatedMinPerWeek": 23000,
+      "validated": "All 14 distributions (671 tests) pass locally in 66s, and a forced failure exits 1."
     },
     {
       "repo": "microsoft/aspire",
