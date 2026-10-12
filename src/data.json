@@ -104,14 +104,14 @@
     {
       "repo": "withastro/astro",
       "workflow": ".github/workflows/continuous_benchmark.yml",
-      "status": "held",
+      "status": "pr",
       "title": "Cancel superseded benchmark runs",
       "pattern": "Superseded runs",
       "problem": "The benchmark workflow has no concurrency group, and 30% of PR runs were superseded but still ran all 4 shards.",
-      "fix": "Add a per-PR concurrency group with cancel-in-progress.",
+      "fix": "Add a per-PR concurrency group with cancel-in-progress. Pushes to main stay keyed on run_id, so CodSpeed baselines never cancel.",
       "measured": "Oct 8 to 12: 14 of 46 PR benchmark runs were superseded, wasting 274 rounded job-min.",
       "estimatedMinPerWeek": 250,
-      "note": "Held. Astro's CI is already tight, and this one is small."
+      "pr": 18342
     },
     {
       "repo": "metabase/metabase",
