@@ -1,0 +1,119 @@
+{
+  "updated": "2026-10-11",
+  "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
+  "findings": [
+    {
+      "repo": "payloadcms/payload",
+      "workflow": ".github/workflows/main.yml",
+      "status": "pr",
+      "pr": 18663,
+      "title": "Start storage emulators only for the suites that use them",
+      "pattern": "Unused service setup",
+      "problem": "Each CI run fans out about 200 E2E shards. Every shard spends about 40s starting LocalStack, Azurite, fake-gcs, a Vercel Blob emulator and Redis. About 95% of shards never touch them.",
+      "fix": "Add storage and redis inputs to the shared start-services action. E2E starts the emulators only for the storage suites.",
+      "measured": "Over 7.3 days and 690 runs, a sample of 214 runs and 52,161 jobs showed service startup averaging 75s per E2E job.",
+      "estimatedMinPerWeek": 80000
+    },
+    {
+      "repo": "vercel/next.js",
+      "workflow": ".github/workflows/build_and_test.yml",
+      "status": "pr",
+      "pr": 100004,
+      "title": "Skip empty \"new and changed tests\" shards",
+      "pattern": "No-op matrix shards",
+      "problem": "Every run starts 20 \"new and changed tests\" shards on 16-core runners. Groups fill from 1 to n, so a PR that touches one test file gets 16 shards that install deps and then print \"No added/changed tests detected\".",
+      "fix": "The changes job counts changed test files per mode and emits only min(n, 5) groups. An empty matrix skips the job.",
+      "measured": "Across 66 runs from Oct 4 to 10, 703 of 820 shard jobs finished in under a minute.",
+      "estimatedMinPerWeek": 11900
+    },
+    {
+      "repo": "trinodb/trino",
+      "workflow": ".github/workflows/ci.yml",
+      "status": "pr",
+      "pr": 31549,
+      "title": "Skip secret-dependent matrix legs on fork PRs",
+      "pattern": "No-op matrix shards",
+      "problem": "Fork PRs don't get secrets, yet 15 cloud and Databricks matrix legs still build and load images, then skip every test.",
+      "fix": "The set-matrix steps filter out those legs when the PR comes from a fork. Maintainers keep /test-with-secrets.",
+      "measured": "Oct 4 to 11: 356 of 579 CI runs came from forks. 122 sampled fork runs averaged 9.9 no-op jobs each.",
+      "estimatedMinPerWeek": 10800
+    },
+    {
+      "repo": "shadcn-ui/ui",
+      "workflow": ".github/workflows/templates.yml",
+      "status": "pr",
+      "pr": 12276,
+      "title": "Run only the templates a PR changes",
+      "pattern": "Full matrix on scoped changes",
+      "problem": "Templates is a 25-leg matrix (5 templates x 5 package managers), and every PR runs all of it. Most runs are Dependabot PRs that touch a single template.",
+      "fix": "A small scope job diffs the commit under test and narrows the matrix to the changed templates. Any other change runs all 25.",
+      "measured": "Oct 4 to 11: 65 single-template Dependabot runs spent 8,466 rounded min on templates they couldn't affect.",
+      "estimatedMinPerWeek": 8350,
+      "validated": "Tested on a fork: changing one template ran 5 legs, a root change ran 25, and a rename ran 10."
+    },
+    {
+      "repo": "oven-sh/bun",
+      "workflow": ".github/workflows/rust-lints.yml",
+      "status": "pr",
+      "pr": 45015,
+      "title": "Warm the mordant cache on main",
+      "pattern": "Cache scoped wrong",
+      "problem": "The mordant-bin cache was only ever saved from PR runs, so every new PR branch rebuilt it from scratch.",
+      "fix": "Add a path-filtered push trigger on main that only builds and saves the cache. PRs then restore it from the default branch.",
+      "measured": "In a sample of 62 runs, all 23 misses were a branch's first run, and each miss cost +1.34 rounded min.",
+      "estimatedMinPerWeek": 355,
+      "validated": "Tested on a fork: the push run saved the main cache, and the next PR run hit it."
+    },
+    {
+      "repo": "SocketDev/socket-patch",
+      "workflow": ".github/workflows/ci.yml",
+      "status": "blocked",
+      "branch": "https://github.com/SocketDev/socket-patch/compare/main...austenstone:socket-patch:ci-full-tier-nightly",
+      "title": "Run the full test tier nightly, as the header says",
+      "pattern": "Nightly work on every push",
+      "problem": "The workflow header says the full tier is nightly, but 41 full-tier legs also run on every merge to main. Most finish in under a minute.",
+      "fix": "Gate the 3 full-tier jobs on schedule and workflow_dispatch, the same condition a sibling job already uses.",
+      "measured": "Oct 10 to 11: the full tier was 79% of push jobs (1,845 of 2,330).",
+      "estimatedMinPerWeek": 12300,
+      "note": "Only collaborators can open PRs on this repo. The branch is ready."
+    },
+    {
+      "repo": "astral-sh/uv",
+      "workflow": ".github/workflows/ci.yml",
+      "status": "held",
+      "title": "Skip full CI on stacked-PR layers",
+      "pattern": "Superseded runs",
+      "problem": "Stacked-PR layers were 18% of branches but 57% of PR CI runs, and 74% of those runs were cancelled after restacks.",
+      "fix": "Fall back to uv's own test:skip mode on stack layers unless a label opts in.",
+      "measured": "Oct 4 to 10: all 1,277 PR CI runs, 58% of them cancelled.",
+      "estimatedMinPerWeek": 106000,
+      "note": "Held. uv runs CI on every stack layer on purpose, so this is the maintainers' call."
+    },
+    {
+      "repo": "openclaw/openclaw",
+      "workflow": ".github/workflows/ci.yml",
+      "status": "held",
+      "title": "Hourly main CI is almost always red",
+      "pattern": "Failure loop",
+      "problem": "Hourly main CI failed 182 of 183 runs in a week. Cutting the cadence would break their PR gate, which uses it as a baseline.",
+      "fix": "Fix the flake first. A smaller side fix moves Hourly Extension Tests to every 3 hours.",
+      "measured": "Oct 4 to 12: 183 scheduled runs, 182 failed, 187,765 rounded runner-min.",
+      "note": "Held. This needs a diagnosis, not a CI tweak."
+    },
+    {
+      "repo": "withastro/astro",
+      "workflow": ".github/workflows/continuous_benchmark.yml",
+      "status": "held",
+      "title": "Cancel superseded benchmark runs",
+      "pattern": "Superseded runs",
+      "problem": "The benchmark workflow has no concurrency group, and 30% of PR runs were superseded but still ran all 4 shards.",
+      "fix": "Add a per-PR concurrency group with cancel-in-progress.",
+      "measured": "Oct 8 to 12: 14 of 46 PR benchmark runs were superseded, wasting 274 rounded job-min.",
+      "estimatedMinPerWeek": 250,
+      "note": "Held. Astro's CI is already tight, and this one is small."
+    },
+    { "repo": "metabase/metabase", "status": "scanning" },
+    { "repo": "apache/airflow", "status": "scanning" },
+    { "repo": "microsoft/aspire", "status": "scanning" }
+  ]
+}
