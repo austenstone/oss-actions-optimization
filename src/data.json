@@ -37,7 +37,7 @@
       "fix": "The set-matrix steps filter out those legs when the PR comes from a fork. Maintainers keep /test-with-secrets.",
       "measured": "Oct 4 to 11: 356 of 579 CI runs came from forks. 122 sampled fork runs averaged 9.9 no-op jobs each.",
       "estimatedMinPerWeek": 10800,
-      "note": "Review feedback addressed. Signed CLA being submitted to the Trino Foundation, which takes a few days to process."
+      "note": "Review feedback addressed. Signed CLA submitted to the Trino Foundation on 2026-10-13; processing takes a few days."
     },
     {
       "repo": "shadcn-ui/ui",
