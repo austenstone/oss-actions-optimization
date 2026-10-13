@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-13T00:05:31.676Z",
+  "syncedAt": "2026-10-13T05:08:12.813Z",
   "prs": {
     "payloadcms/payload": {
       "status": "open",
@@ -52,9 +52,9 @@
       "mergedAt": null
     },
     "heygen-com/hyperframes": {
-      "status": "open",
+      "status": "merged",
       "review": "approved",
-      "mergedAt": null
+      "mergedAt": "2026-10-13T04:26:36Z"
     },
     "cloudposse/atmos": {
       "status": "open",

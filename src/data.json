@@ -177,7 +177,7 @@
       "measured": "Last 7 days: 1,205 edit reruns followed a passing run on the same SHA and burned ~129k job-min. 20 sampled reruns had no base change.",
       "estimatedMinPerWeek": 129000,
       "pctOfRepo": 16,
-      "note": "Approved by a maintainer on Oct 12 with all CI green; waiting to merge."
+      "note": "Approved by a maintainer and merged on Oct 12."
     },
     {
       "repo": "cloudposse/atmos",
