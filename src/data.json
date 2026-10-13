@@ -163,7 +163,13 @@
       "fix": "A concurrency group queues push-to-main runs without cancelling, so main is still tested at its newest commit. Scheduled and manual runs are keyed by run ID and never queue.",
       "measured": "98 push runs/week, p50 183 min, ~9.2k job-min per run (sampled n=12). Replaying the queue gives ~32 runs/week.",
       "estimatedMinPerWeek": 610000,
-      "pctOfRepo": 20
+      "pctOfRepo": 20,
+      "note": "Declined. Maintainers keep a complete run on every main commit to bisect regressions across all dd-trace repos, so we closed it.",
+      "response": {
+        "quote": "Runs on main are our source of truth for the health of the repository, and a key tool to identify which commit or event introduced a regression.",
+        "author": "cbeauchesne",
+        "url": "https://github.com/DataDog/system-tests/pull/8025#pullrequestreview-5501469480"
+      }
     },
     {
       "repo": "heygen-com/hyperframes",
