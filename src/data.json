@@ -137,7 +137,13 @@
       "fix": "One job loops over the distributions and fails if any of them fail.",
       "measured": "Oct 5 to 11, sampled every 8th of 1,971 runs: these legs were 20.6% of all jobs, and 98.7% finished in under a minute.",
       "estimatedMinPerWeek": 23000,
-      "validated": "All 14 distributions (671 tests) pass locally in 66s, and a forced failure exits 1."
+      "validated": "All 14 distributions (671 tests) pass locally in 66s, and a forced failure exits 1.",
+      "note": "Contributor approved after the review fix. Waiting on a committer review.",
+      "response": {
+        "quote": "Thanks for the update!",
+        "author": "Andrushika",
+        "url": "https://github.com/apache/airflow/pull/74566#pullrequestreview-5506902784"
+      }
     },
     {
       "repo": "microsoft/aspire",
