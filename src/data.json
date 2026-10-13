@@ -36,7 +36,8 @@
       "problem": "Fork PRs don't get secrets, yet 15 cloud and Databricks matrix legs still build and load images, then skip every test.",
       "fix": "The set-matrix steps filter out those legs when the PR comes from a fork. Maintainers keep /test-with-secrets.",
       "measured": "Oct 4 to 11: 356 of 579 CI runs came from forks. 122 sampled fork runs averaged 9.9 no-op jobs each.",
-      "estimatedMinPerWeek": 10800
+      "estimatedMinPerWeek": 10800,
+      "note": "Review feedback addressed. Signed CLA being submitted to the Trino Foundation, which takes a few days to process."
     },
     {
       "repo": "shadcn-ui/ui",
@@ -233,7 +234,8 @@
         "quote": "I agree the PR matrix is bigger than it needs to be. We have discussed the same approach internally as well.",
         "author": "petyaslavova",
         "url": "https://github.com/redis/redis-py/pull/4421#pullrequestreview-5488921510"
-      }
+      },
+      "note": "Maintainer agreed with the approach and asked for a broader PR version set. Updated and waiting on re-review."
     },
     {
       "repo": "trycua/cua",
@@ -264,7 +266,8 @@
       "fix": "PR-only cancel-in-progress. Push, merge queue and schedule runs are keyed by run ID, the same pattern dd-trace-java uses.",
       "measured": "774 PR runs/week, 0 cancelled, 190 superseded runs finished anyway at ~267 job-min each (sampled n=30).",
       "estimatedMinPerWeek": 51000,
-      "pctOfRepo": 7
+      "pctOfRepo": 7,
+      "note": "Approved by a maintainer. Waiting on a changelog label before merge."
     },
     {
       "repo": "swiftlang/github-workflows",
@@ -342,7 +345,8 @@
       "problem": "Bigtable, Pub/Sub and Spanner unit test shards occasionally hang until the 6-hour limit.",
       "fix": "A 45-minute timeout on split-units.",
       "measured": "Sep 27 to Oct 10: ~6.1k min/week in hung jobs.",
-      "estimatedMinPerWeek": 6100
+      "estimatedMinPerWeek": 6100,
+      "note": "CLA signed and green. Waiting on two Google maintainer approvals."
     },
     {
       "repo": "cloudamqp/lavinmq",
