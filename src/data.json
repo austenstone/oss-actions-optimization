@@ -176,7 +176,8 @@
       "fix": "A small composite action skips the check jobs only when the previous run on the same head SHA succeeded and the base branch didn't change. Failed or unfinished predecessors still re-run everything, so a body edit can't turn a failed required check green.",
       "measured": "Last 7 days: 1,205 edit reruns followed a passing run on the same SHA and burned ~129k job-min. 20 sampled reruns had no base change.",
       "estimatedMinPerWeek": 129000,
-      "pctOfRepo": 16
+      "pctOfRepo": 16,
+      "note": "Approved by a maintainer on Oct 12 with all CI green; waiting to merge."
     },
     {
       "repo": "cloudposse/atmos",
@@ -233,7 +234,12 @@
       "fix": "Add `save-if: github.ref == 'refs/heads/main'` to the 27 unguarded rust-cache steps, matching 11 steps the repo already guarded.",
       "measured": "680 of 756 sampled ci-cua-sdk jobs missed cache. Cache hits ran 30-70% faster (e.g. macOS smoke 28.5 vs 63.4 min). Savings depend on the post-fix hit rate: ~65-104k min/week.",
       "estimatedMinPerWeek": 85000,
-      "pctOfRepo": 13
+      "pctOfRepo": 13,
+      "response": {
+        "quote": "The cache numbers make the case clearly, and the CLA is signed.",
+        "author": "f-trycua",
+        "url": "https://github.com/trycua/cua/pull/5023#issuecomment-6134331535"
+      }
     },
     {
       "repo": "DataDog/dd-trace-py",
