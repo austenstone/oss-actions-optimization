@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-14T08:07:37.532Z",
+  "syncedAt": "2026-10-14T11:35:24.493Z",
   "prs": {
     "payloadcms/payload": {
       "status": "open",
@@ -67,9 +67,9 @@
       "mergedAt": "2026-10-12T17:45:28Z"
     },
     "redis/redis-py": {
-      "status": "open",
-      "review": "changes",
-      "mergedAt": null
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-14T11:31:51Z"
     },
     "trycua/cua": {
       "status": "open",
