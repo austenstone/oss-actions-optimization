@@ -235,7 +235,7 @@
         "author": "petyaslavova",
         "url": "https://github.com/redis/redis-py/pull/4421#pullrequestreview-5488921510"
       },
-      "note": "Maintainer agreed with the approach and asked for a broader PR version set. Updated and waiting on re-review."
+      "note": "Maintainer signed off on the updated version set and said they will merge once CI is green. Description updated to match."
     },
     {
       "repo": "trycua/cua",
