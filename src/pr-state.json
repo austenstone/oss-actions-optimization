@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-15T00:44:29.156Z",
+  "syncedAt": "2026-10-15T01:33:44.577Z",
   "prs": {
     "payloadcms/payload": {
       "status": "open",
@@ -22,6 +22,11 @@
       "mergedAt": null
     },
     "oven-sh/bun": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "astral-sh/uv": {
       "status": "open",
       "review": null,
       "mergedAt": null
@@ -117,6 +122,16 @@
       "mergedAt": "2026-10-12T09:43:59Z"
     },
     "floccusaddon/floccus": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "datamodel-code-generator/datamodel-code-generator": {
+      "status": "open",
+      "review": null,
+      "mergedAt": null
+    },
+    "cilium/cilium": {
       "status": "open",
       "review": null,
       "mergedAt": null
