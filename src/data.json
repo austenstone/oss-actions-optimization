@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-12",
+  "updated": "2026-10-14",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -443,6 +443,32 @@
       "pctOfRepo": 27,
       "note": "Builds on the review of cilium/cilium#49001, using run history instead of the Actions cache. If the lookup fails, the branch is dispatched as before.",
       "pr": 49377
+    },
+    {
+      "repo": "NethermindEth/nethermind",
+      "workflow": ".github/workflows/nethermind-tests.yml",
+      "status": "pr",
+      "pr": 14671,
+      "title": "Run only x64 test legs on draft PRs",
+      "pattern": "Heavy suite on drafts",
+      "problem": "Every PR push, drafts included, fanned out ~620 jobs across x64, arm64, macOS and Windows, plus checked, trie and single-proc re-runs of the suite.",
+      "fix": "Draft PRs run the x64 core suite only. The arm64, macOS and Windows legs and the checked, trie and single-proc variants run once a PR is ready for review and on master, and their summary checks still report on drafts.",
+      "measured": "Sampled public runs: ~40% of PR-linked runs were on drafts, and non-x64 legs plus config variants are ~1.25M min/week of PR traffic. ~300-450k min/week avoidable (low-medium confidence).",
+      "estimatedMinPerWeek": 300000,
+      "pctOfRepo": 10
+    },
+    {
+      "repo": "commonwarexyz/monorepo",
+      "workflow": ".github/workflows/fast.yml",
+      "status": "pr",
+      "pr": 5260,
+      "title": "Run Linux slow tests only in Coverage",
+      "pattern": "Duplicate test runs",
+      "problem": "Coverage already runs every Linux test, slow ones included, and its required check fails on any failure. Fast ran the same Linux slow tests again in 40 partitions.",
+      "fix": "Keep the slow partitions on macOS only in Fast. The Tests matrix drops from 66 to 26 jobs, and required check names are unchanged.",
+      "measured": "Public run timings: Linux slow partitions cost ~150 job-min per PR push across ~600-650 PR runs/week, about 95-105k min/week (medium confidence).",
+      "estimatedMinPerWeek": 95000,
+      "pctOfRepo": 6
     }
   ]
 }

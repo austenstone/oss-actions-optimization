@@ -30,10 +30,10 @@ const toReview = ({ reviewDecision, latestReviews }) => {
 }
 
 const state = Object.fromEntries(
-  prs.map(({ repo }, i) => {
+  prs.map(({ repo, pr }, i) => {
     const p = data[`p${i}`].pullRequest
     const status = p.mergedAt ? 'merged' : p.state === 'CLOSED' ? 'closed' : p.isDraft ? 'draft' : 'open'
-    return [repo, { status, review: toReview(p), mergedAt: p.mergedAt }]
+    return [`${repo}#${pr}`, { status, review: toReview(p), mergedAt: p.mergedAt }]
   }),
 )
 

@@ -53,7 +53,7 @@ const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 
 const byImpact = (a: Finding, b: Finding) => (b.estimatedMinPerWeek ?? 0) - (a.estimatedMinPerWeek ?? 0)
 
 const prStates = prState.prs as Record<string, PrSync>
-const syncOf = ({ repo }: Finding): PrSync => prStates[repo] ?? { status: 'open', review: null }
+const syncOf = ({ repo, pr }: Finding): PrSync => prStates[`${repo}#${pr}`] ?? { status: 'open', review: null }
 
 const statusRank: Record<PrSync['status'], number> = { merged: 0, open: 1, draft: 1, closed: 2 }
 const byProgress = (a: Finding, b: Finding) => statusRank[syncOf(a).status] - statusRank[syncOf(b).status] || byImpact(a, b)
@@ -238,7 +238,7 @@ const App = () => {
       <Section title="Pull requests">
         <Stack gap="normal">
           {prs.map((f) => (
-            <FindingCard key={f.repo} finding={f} />
+            <FindingCard key={`${f.repo}:${f.title}`} finding={f} />
           ))}
         </Stack>
       </Section>
@@ -246,7 +246,7 @@ const App = () => {
       <Section title="Found, not shipped by us">
         <Stack gap="normal">
           {held.map((f) => (
-            <FindingCard key={f.repo} finding={f} />
+            <FindingCard key={`${f.repo}:${f.title}`} finding={f} />
           ))}
           {scanning.length > 0 && (
             <Stack direction="horizontal" align="center" gap="condensed">
