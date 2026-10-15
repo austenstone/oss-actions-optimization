@@ -83,14 +83,14 @@
     {
       "repo": "astral-sh/uv",
       "workflow": ".github/workflows/ci.yml",
-      "status": "held",
+      "status": "pr",
       "title": "Skip full CI on stacked-PR layers",
       "pattern": "Superseded runs",
       "problem": "Stacked-PR layers were 18% of branches but 57% of PR CI runs, and 74% of those runs were cancelled after restacks.",
-      "fix": "Fall back to uv's own test:skip mode on stack layers unless a label opts in.",
+      "fix": "Keep lint and checks on every stack layer, but run tests only once a PR targets main or a release branch. A test:stack label opts a layer back in.",
       "measured": "Oct 4 to 10: all 1,277 PR CI runs, 58% of them cancelled.",
       "estimatedMinPerWeek": 106000,
-      "note": "Ready on a branch. uv’s contribution policy asks for PRs written and opened by a human, so Austen will open this one himself."
+      "pr": 22580
     },
     {
       "repo": "openclaw/openclaw",
@@ -420,19 +420,20 @@
     {
       "repo": "datamodel-code-generator/datamodel-code-generator",
       "workflow": ".github/workflows/test.yaml",
-      "status": "held",
+      "status": "pr",
       "title": "Run the full suite only at the ends of a PR stack",
       "pattern": "Stacked PR fan-out",
       "problem": "210 of 276 recent PRs are GitHub-native stacks. Every layer runs the full test suite, and a branches filter can't help because each layer evaluates as targeting main.",
-      "fix": "Run the 9 test jobs on the lowest unmerged and top layers only, with the required check still reporting. This reverses a deliberate maintainer change, so it's their call.",
+      "fix": "Run the 9 test jobs on the lowest unmerged and top layers only, with the required check still reporting. This reverses a deliberate maintainer change, so the PR offers a narrower Windows/macOS-only variant too.",
       "measured": "test.yaml 1,302 runs/week, ~411k job-min. Mid-stack runs: 477/week at ~320 min (sampled n=148).",
       "estimatedMinPerWeek": 153000,
-      "pctOfRepo": 35
+      "pctOfRepo": 35,
+      "pr": 4699
     },
     {
       "repo": "cilium/cilium",
       "workflow": ".github/workflows/ariane-scheduled.yaml",
-      "status": "held",
+      "status": "pr",
       "title": "Skip scheduled stable-branch runs when HEAD hasn't changed",
       "pattern": "Re-testing unchanged commits",
       "problem": "Every ~6 hours a schedule dispatches full e2e suites on each stable branch, even when the branch HEAD is unchanged.",
@@ -440,7 +441,8 @@
       "measured": "Oct 5 to 12: 84 stable-branch firings covered only 27 distinct HEADs; 57 re-tested the previous HEAD.",
       "estimatedMinPerWeek": 360000,
       "pctOfRepo": 27,
-      "note": "A community PR (cilium/cilium#49001) already proposes this, and Cilium doesn't accept AI-written PR text, so we're offering the cache-free variant to that author rather than opening a competing PR."
+      "note": "Builds on the review of cilium/cilium#49001, using run history instead of the Actions cache. If the lookup fails, the branch is dispatched as before.",
+      "pr": 49377
     }
   ]
 }
