@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-14T11:35:24.493Z",
+  "syncedAt": "2026-10-15T00:44:29.156Z",
   "prs": {
     "payloadcms/payload": {
       "status": "open",
@@ -82,9 +82,9 @@
       "mergedAt": null
     },
     "swiftlang/github-workflows": {
-      "status": "open",
+      "status": "merged",
       "review": "approved",
-      "mergedAt": null
+      "mergedAt": "2026-10-14T23:44:30Z"
     },
     "apple/swift-nio": {
       "status": "merged",
