@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-15T02:07:24.204Z",
+  "syncedAt": "2026-10-15T15:04:14.122Z",
   "prs": {
     "payloadcms/payload#18663": {
       "status": "open",
@@ -127,9 +127,9 @@
       "mergedAt": null
     },
     "datamodel-code-generator/datamodel-code-generator#4699": {
-      "status": "open",
-      "review": null,
-      "mergedAt": null
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-15T11:31:03Z"
     },
     "cilium/cilium#49377": {
       "status": "open",

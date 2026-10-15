@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-14",
+  "updated": "2026-10-15",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -428,7 +428,12 @@
       "measured": "test.yaml 1,302 runs/week, ~411k job-min. Mid-stack runs: 477/week at ~320 min (sampled n=148).",
       "estimatedMinPerWeek": 153000,
       "pctOfRepo": 35,
-      "pr": 4699
+      "pr": 4699,
+      "response": {
+        "quote": "Updating our stacks had been taking far too long lately, so this comes at a perfect time.",
+        "author": "koxudaxi",
+        "url": "https://github.com/datamodel-code-generator/datamodel-code-generator/pull/4699#issuecomment-6191031379"
+      }
     },
     {
       "repo": "cilium/cilium",
