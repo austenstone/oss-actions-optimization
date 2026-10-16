@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -375,7 +375,12 @@
       "problem": "Stalled selenium jobs ran to the 6-hour limit.",
       "fix": "A 90-minute job timeout.",
       "measured": "Sep 27 to Oct 10: ~5.9k min/week in hung jobs.",
-      "estimatedMinPerWeek": 5900
+      "estimatedMinPerWeek": 5900,
+      "response": {
+        "quote": "Thanks! That seems like a good idea!",
+        "author": "marcelklehr",
+        "url": "https://github.com/floccusaddon/floccus/pull/2382#issuecomment-6212279843"
+      }
     },
     {
       "repo": "kubeflow/pipelines",
@@ -473,7 +478,8 @@
       "fix": "Keep the slow partitions on macOS only in Fast. The Tests matrix drops from 66 to 26 jobs, and required check names are unchanged.",
       "measured": "Public run timings: Linux slow partitions cost ~150 job-min per PR push across ~600-650 PR runs/week, about 95-105k min/week (medium confidence).",
       "estimatedMinPerWeek": 95000,
-      "pctOfRepo": 6
+      "pctOfRepo": 6,
+      "note": "Merged by patrick-ogrady, who added a commit documenting that Coverage owns the Linux slow tests."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-15T15:04:14.122Z",
+  "syncedAt": "2026-10-16T15:03:41.262Z",
   "prs": {
     "payloadcms/payload#18663": {
       "status": "open",
@@ -122,9 +122,9 @@
       "mergedAt": "2026-10-12T09:43:59Z"
     },
     "floccusaddon/floccus#2382": {
-      "status": "open",
+      "status": "merged",
       "review": null,
-      "mergedAt": null
+      "mergedAt": "2026-10-16T09:19:48Z"
     },
     "datamodel-code-generator/datamodel-code-generator#4699": {
       "status": "merged",
@@ -142,9 +142,9 @@
       "mergedAt": null
     },
     "commonwarexyz/monorepo#5260": {
-      "status": "open",
-      "review": null,
-      "mergedAt": null
+      "status": "merged",
+      "review": "approved",
+      "mergedAt": "2026-10-15T18:40:30Z"
     }
   }
 }
