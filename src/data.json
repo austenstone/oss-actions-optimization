@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16",
+  "updated": "2026-10-17",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -90,7 +90,13 @@
       "fix": "Keep lint and checks on every stack layer, but run tests only once a PR targets main or a release branch. A test:stack label opts a layer back in.",
       "measured": "Oct 4 to 10: all 1,277 PR CI runs, 58% of them cancelled.",
       "estimatedMinPerWeek": 106000,
-      "pr": 22580
+      "pr": 22580,
+      "note": "Declined. Maintainers want CI on every PR in a stack, since GitHub can merge a whole stack at once.",
+      "response": {
+        "quote": "I don't think we want this, we care about testing on stacks and GitHub allows merging a whole stack at once.",
+        "author": "zanieb",
+        "url": "https://github.com/astral-sh/uv/pull/22580#issuecomment-6219807123"
+      }
     },
     {
       "repo": "openclaw/openclaw",
@@ -465,7 +471,13 @@
       "fix": "Draft PRs run the x64 core suite only. The arm64, macOS and Windows legs and the checked, trie and single-proc variants run once a PR is ready for review and on master, and their summary checks still report on drafts.",
       "measured": "Sampled public runs: ~40% of PR-linked runs were on drafts, and non-x64 legs plus config variants are ~1.25M min/week of PR traffic. ~300-450k min/week avoidable (low-medium confidence).",
       "estimatedMinPerWeek": 300000,
-      "pctOfRepo": 10
+      "pctOfRepo": 10,
+      "note": "Declined for now by maintainers.",
+      "response": {
+        "quote": "I don't think we need this kind of changes for now. Thank you for your time.",
+        "author": "rubo",
+        "url": "https://github.com/NethermindEth/nethermind/pull/14671#issuecomment-6218893672"
+      }
     },
     {
       "repo": "commonwarexyz/monorepo",

@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-16T15:03:41.262Z",
+  "syncedAt": "2026-10-17T15:49:40.248Z",
   "prs": {
     "payloadcms/payload#18663": {
       "status": "open",
@@ -27,7 +27,7 @@
       "mergedAt": null
     },
     "astral-sh/uv#22580": {
-      "status": "open",
+      "status": "closed",
       "review": null,
       "mergedAt": null
     },
@@ -137,7 +137,7 @@
       "mergedAt": null
     },
     "NethermindEth/nethermind#14671": {
-      "status": "open",
+      "status": "closed",
       "review": null,
       "mergedAt": null
     },
