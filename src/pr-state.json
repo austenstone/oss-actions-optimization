@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-17T15:49:40.248Z",
+  "syncedAt": "2026-10-18T15:19:23.028Z",
   "prs": {
     "payloadcms/payload#18663": {
       "status": "open",
@@ -62,9 +62,9 @@
       "mergedAt": "2026-10-13T04:26:36Z"
     },
     "cloudposse/atmos#3366": {
-      "status": "open",
+      "status": "merged",
       "review": "approved",
-      "mergedAt": null
+      "mergedAt": "2026-10-17T23:50:41Z"
     },
     "commonwarexyz/monorepo#5233": {
       "status": "merged",
