@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-18T15:19:23.028Z",
+  "syncedAt": "2026-10-19T15:23:52.549Z",
   "prs": {
     "payloadcms/payload#18663": {
       "status": "open",
@@ -42,9 +42,9 @@
       "mergedAt": null
     },
     "apache/airflow#74566": {
-      "status": "open",
+      "status": "merged",
       "review": "approved",
-      "mergedAt": null
+      "mergedAt": "2026-10-18T20:35:59Z"
     },
     "microsoft/aspire#20914": {
       "status": "open",
