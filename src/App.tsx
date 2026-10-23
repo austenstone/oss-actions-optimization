@@ -1,295 +1,492 @@
-import { CheckIcon, GraphIcon, RocketIcon, SearchIcon, ToolsIcon } from '@primer/octicons-react'
 import {
+  CheckCircleIcon,
+  CommentDiscussionIcon,
+  GitMergeIcon,
+  GitPullRequestClosedIcon,
+  GitPullRequestIcon,
+  GraphIcon,
+  MoonIcon,
+  RocketIcon,
+  SearchIcon,
+  SunIcon,
+  ToolsIcon,
+} from '@primer/octicons-react'
+import {
+  Button,
+  Grid,
   Heading,
+  Hero,
+  InlineLink,
   Label,
   type LabelProps,
   Link,
-  PageHeader,
-  Spinner,
-  Stack,
-  StateLabel,
-  type StateLabelProps,
+  Pillar,
+  Statistic,
+  Testimonial,
   Text,
-  Timeline,
-} from '@primer/react'
-import type { ReactNode } from 'react'
+  ThemeProvider,
+} from '@primer/react-brand'
+import { type ReactNode, useState } from 'react'
 import styles from './App.module.css'
-import data from './data.json'
-import prState from './pr-state.json'
+import {
+  declined,
+  type Finding,
+  featured,
+  fmt,
+  inReview,
+  mergedCases,
+  notShipped,
+  prUrl,
+  REPO_URL,
+  repeatPatterns,
+  scanning,
+  shortDate,
+  skill,
+  stats,
+  syncedAt,
+  syncOf,
+  updated,
+} from './findings'
 
-type Status = 'pr' | 'blocked' | 'held' | 'fixed' | 'scanning'
+const Eyebrow = ({ children, accent }: { children: ReactNode; accent?: boolean }) => (
+  <Text as="p" font="monospace" size="100" className={accent ? `${styles.eyebrow} ${styles.accent}` : styles.eyebrow}>
+    {children}
+  </Text>
+)
 
-type Response = { quote: string; author: string; url: string }
+const Accent = ({ children }: { children: ReactNode }) => <span className={styles.accent}>{children}</span>
 
-type PrSync = { status: 'open' | 'merged' | 'closed' | 'draft'; review: 'approved' | 'changes' | null }
-
-type Finding = {
-  repo: string
-  status: Status
-  workflow?: string
-  pr?: number
-  branch?: string
-  issue?: number
-  title?: string
-  pattern?: string
-  problem?: string
-  fix?: string
-  measured?: string
-  estimatedMinPerWeek?: number
-  pctOfRepo?: number
-  validated?: string
-  note?: string
-  response?: Response
-  fixedBy?: number
-}
-
-type PrState = StateLabelProps['status']
-
-const findings = data.findings as Finding[]
-const REPO_URL = 'https://github.com/austenstone/oss-actions-optimization'
-
-const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 1)}k` : `${n}`)
-
-const byImpact = (a: Finding, b: Finding) => (b.estimatedMinPerWeek ?? 0) - (a.estimatedMinPerWeek ?? 0)
-
-const prStates = prState.prs as Record<string, PrSync>
-const syncOf = ({ repo, pr }: Finding): PrSync => prStates[`${repo}#${pr}`] ?? { status: 'open', review: null }
-
-const statusRank: Record<PrSync['status'], number> = { merged: 0, open: 1, draft: 1, closed: 2 }
-const byProgress = (a: Finding, b: Finding) => statusRank[syncOf(a).status] - statusRank[syncOf(b).status] || byImpact(a, b)
-
-const prs = findings.filter(({ status }) => status === 'pr').sort(byProgress)
-const held = findings.filter(({ status }) => ['held', 'blocked', 'fixed'].includes(status)).sort(byImpact)
-const scanning = findings.filter(({ status }) => status === 'scanning')
-const sumMinutes = (list: Finding[]) => list.reduce((sum, { estimatedMinPerWeek }) => sum + (estimatedMinPerWeek ?? 0), 0)
-const merged = prs.filter((f) => syncOf(f).status === 'merged')
-const approved = prs.filter((f) => syncOf(f).status === 'open' && syncOf(f).review === 'approved')
-
-const prStatus: Record<PrSync['status'], PrState> = {
-  open: 'pullOpened',
-  merged: 'pullMerged',
-  closed: 'pullClosed',
-  draft: 'draft',
-}
-
-const prStateText: Partial<Record<PrState, string>> = {
-  pullOpened: 'Open',
-  pullMerged: 'Merged',
-  pullClosed: 'Closed',
-  draft: 'Draft',
-}
-
-const reviewLabel: Record<NonNullable<PrSync['review']>, { text: string; variant: LabelProps['variant'] }> = {
-  approved: { text: 'Approved', variant: 'success' },
-  changes: { text: 'Changes requested', variant: 'attention' },
-}
-
-const heldLabel: Record<string, { text: string; variant: LabelProps['variant'] }> = {
-  blocked: { text: 'Blocked', variant: 'severe' },
-  held: { text: 'Held', variant: 'attention' },
-  fixed: { text: 'Fixed upstream', variant: 'done' },
-}
-
-const FindingCard = ({ finding }: { finding: Finding }) => {
-  const {
-    repo,
-    workflow,
-    pr,
-    branch,
-    issue,
-    title,
-    pattern,
-    problem,
-    fix,
-    measured,
-    estimatedMinPerWeek,
-    pctOfRepo,
-    validated,
-    note,
-    status,
-    response,
-    fixedBy,
-  } = finding
-  const href = pr ? `https://github.com/${repo}/pull/${pr}` : branch
-  const sync = syncOf(finding)
-  const prState = prStatus[sync.status]
-  const review = sync.status === 'open' && sync.review ? reviewLabel[sync.review] : null
-
-  return (
-    <div className={styles.card}>
-      <Stack gap="condensed">
-        <Stack direction="horizontal" align="center" wrap="wrap" gap="condensed">
-          {pr ? (
-            <StateLabel status={prState} size="small">
-              {prStateText[prState]}
-            </StateLabel>
-          ) : (
-            <Label variant={heldLabel[status]?.variant}>{heldLabel[status]?.text}</Label>
-          )}
-          <Link href={`https://github.com/${repo}`}>
-            <Text weight="semibold">{repo}</Text>
-          </Link>
-          <span className={styles.mono}>{workflow}</span>
-          {review && <Label variant={review.variant}>{review.text}</Label>}
-          {pattern && <Label variant="secondary">{pattern}</Label>}
-          {issue && <Link href={`https://github.com/${repo}/issues/${issue}`}>Issue #{issue}</Link>}
-          {fixedBy && <Link href={`https://github.com/${repo}/pull/${fixedBy}`}>Fix #{fixedBy}</Link>}
-        </Stack>
-        <Heading as="h3" variant="small">
-          {href ? (
-            <Link href={href}>
-              {title}
-              {pr && <span className={styles.muted}> #{pr}</span>}
-            </Link>
-          ) : (
-            title
-          )}
-        </Heading>
-        <Text as="p">{problem}</Text>
-        <Text as="p">
-          <Text weight="semibold">Fix:</Text> {fix}
-        </Text>
-        <Stack direction="horizontal" wrap="wrap" gap="condensed">
-          {estimatedMinPerWeek && <Label variant="success">~{fmt(estimatedMinPerWeek)} job-min/week (est.)</Label>}
-          {pctOfRepo && <Label variant="success">~{pctOfRepo}% of the repo's CI minutes</Label>}
-          {validated && <Label variant="accent">Fork-validated</Label>}
-        </Stack>
-        <Text as="p" size="small" className={styles.muted}>
-          <Text weight="semibold">Measured:</Text> {measured}
-          {validated && ` ${validated}`}
-          {note && ` ${note}`}
-        </Text>
-        {response && (
-          <blockquote className={styles.quote}>
-            <Text as="p">“{response.quote}”</Text>
-            <Text size="small" className={styles.muted}>
-              <Link href={response.url}>@{response.author}, maintainer</Link>
-            </Text>
-          </blockquote>
-        )}
-      </Stack>
+const SectionHead = ({
+  index,
+  label,
+  aside,
+  children,
+}: {
+  index: string
+  label: string
+  aside?: ReactNode
+  children: ReactNode
+}) => (
+  <header className={styles.sectionHead}>
+    <div className={styles.eyebrowRow}>
+      <Eyebrow>
+        {index} / {label}
+      </Eyebrow>
+      {aside}
     </div>
+    <Heading as="h2" size="2" weight="semibold" font="monospace" letterSpacing="condensed">
+      {children}
+    </Heading>
+  </header>
+)
+
+const Field = ({ label, children }: { label: string; children: ReactNode }) =>
+  children ? (
+    <div className={styles.field}>
+      <Eyebrow>{label}</Eyebrow>
+      <Text as="p" size="300" variant="muted">
+        {children}
+      </Text>
+    </div>
+  ) : null
+
+const ShareBar = ({ pct }: { pct: number }) => (
+  <div className={styles.share}>
+    <div className={styles.shareMeta}>
+      <Eyebrow>Share of repo CI minutes</Eyebrow>
+      <Text font="monospace" size="100" variant="muted">
+        ~{pct}% (est.)
+      </Text>
+    </div>
+    <div className={styles.bar}>
+      <span className={styles.barKept} style={{ width: `${100 - pct}%` }} />
+      <span className={styles.barCut} style={{ width: `${pct}%` }} />
+    </div>
+  </div>
+)
+
+const Impact = ({ minutes, size = 'medium' }: { minutes?: number; size?: 'small' | 'medium' | 'large' }) =>
+  minutes ? (
+    <Statistic size={size}>
+      <Statistic.Heading className={styles.accent}>~{fmt(minutes)}</Statistic.Heading>
+      <Statistic.Description variant="muted">job-min/week (est.)</Statistic.Description>
+    </Statistic>
+  ) : null
+
+const Quote = ({ finding: { response, repo } }: { finding: Finding }) =>
+  response ? (
+    <blockquote className={styles.quote}>
+      <Text as="p" size="300">
+        “{response.quote}”
+      </Text>
+      <Text as="p" font="monospace" size="100" variant="muted">
+        <InlineLink href={response.url}>@{response.author}</InlineLink>, maintainer of {repo.split('/')[1]}
+      </Text>
+    </blockquote>
+  ) : null
+
+const refOf = (f: Finding) => (f.pr ? `#${f.pr}` : f.issue ? `issue #${f.issue}` : '')
+const hrefOf = (f: Finding) =>
+  f.pr ? prUrl(f) : f.issue ? `https://github.com/${f.repo}/issues/${f.issue}` : `https://github.com/${f.repo}`
+
+const Featured = ({ finding }: { finding: Finding }) => {
+  const { repo, title, problem, fix, measured, validated, response, pctOfRepo, estimatedMinPerWeek, pattern } = finding
+  return (
+    <section id="featured" className={styles.section}>
+      <SectionHead
+        index="01"
+        label="Featured case"
+        aside={
+          <Link href={prUrl(finding)} size="small" variant="accent" arrowDirection="none">
+            {repo} {refOf(finding)} ↗
+          </Link>
+        }
+      >
+        {title}. <Accent>Merged {shortDate(syncOf(finding).mergedAt)}.</Accent>
+      </SectionHead>
+      <Grid className={styles.grid}>
+        <Grid.Column span={{ xsmall: 12, large: 5 }}>
+          <div className={styles.featuredAside}>
+            <Label color="purple" leadingVisual={<GitMergeIcon />}>
+              {pattern}
+            </Label>
+            <Impact minutes={estimatedMinPerWeek} size="large" />
+            {pctOfRepo && <ShareBar pct={pctOfRepo} />}
+          </div>
+        </Grid.Column>
+        <Grid.Column span={{ xsmall: 12, large: 7 }}>
+          <Field label="Problem">{problem}</Field>
+          <Field label="Fix">{fix}</Field>
+          <Field label="Measured">{[measured, validated].filter(Boolean).join(' ')}</Field>
+        </Grid.Column>
+      </Grid>
+      {response && (
+        <Testimonial size="large" quoteMarkColor="green" className={styles.testimonial}>
+          <Testimonial.Quote>{response.quote}</Testimonial.Quote>
+          <Testimonial.Name position={`Maintainer, ${repo}`}>
+            <InlineLink href={response.url}>@{response.author}</InlineLink>
+          </Testimonial.Name>
+        </Testimonial>
+      )}
+    </section>
   )
 }
 
-const Section = ({ title, children }: { title: string; children: ReactNode }) => (
-  <section className={styles.section}>
-    <Heading as="h2" variant="medium" className={styles.sectionTitle}>
-      {title}
-    </Heading>
-    {children}
-  </section>
-)
+const CaseRow = ({ finding }: { finding: Finding }) => {
+  const { repo, title, problem, fix, measured, validated, note, pctOfRepo, estimatedMinPerWeek, pattern } = finding
+  return (
+    <article className={styles.row}>
+      <Grid className={styles.grid}>
+        <Grid.Column span={{ xsmall: 12, large: 4 }}>
+          <div className={styles.rowAside}>
+            <Eyebrow accent>
+              {repo.split('/')[1]} / {refOf(finding)} · merged {shortDate(syncOf(finding).mergedAt)}
+            </Eyebrow>
+            <Heading as="h3" size="5" weight="semibold">
+              <a href={prUrl(finding)} className={styles.titleLink}>
+                {title}
+              </a>
+            </Heading>
+            {pattern && (
+              <Label size="small" color="gray">
+                {pattern}
+              </Label>
+            )}
+            <Impact minutes={estimatedMinPerWeek} size="small" />
+            {pctOfRepo && <ShareBar pct={pctOfRepo} />}
+          </div>
+        </Grid.Column>
+        <Grid.Column span={{ xsmall: 12, large: 8 }}>
+          <Field label="Problem">{problem}</Field>
+          <Field label="Fix">{fix}</Field>
+          <Field label="Measured">{[measured, validated, note].filter(Boolean).join(' ')}</Field>
+          <Quote finding={finding} />
+        </Grid.Column>
+      </Grid>
+    </article>
+  )
+}
+
+const PatternGroup = ({ pattern, list }: { pattern: string; list: Finding[] }) => {
+  const [example] = list
+  return (
+    <article className={styles.row}>
+      <Grid className={styles.grid}>
+        <Grid.Column span={{ xsmall: 12, large: 4 }}>
+          <div className={styles.rowAside}>
+            <Eyebrow accent>
+              One pattern · {list.length} repos · {list.length} merges
+            </Eyebrow>
+            <Heading as="h3" size="5" weight="semibold">
+              {pattern}
+            </Heading>
+            <Impact minutes={list.reduce((sum, f) => sum + (f.estimatedMinPerWeek ?? 0), 0)} size="small" />
+          </div>
+        </Grid.Column>
+        <Grid.Column span={{ xsmall: 12, large: 8 }}>
+          <Field label={`e.g. ${example.repo.split('/')[1]}`}>{example.problem}</Field>
+          <Field label="Fix">{example.fix}</Field>
+          <ul className={styles.ledger}>
+            {list.map((f) => (
+              <li key={`${f.repo}#${f.pr}`}>
+                <div className={styles.ledgerLine}>
+                  <a href={prUrl(f)} className={styles.titleLink}>
+                    <Text font="monospace" size="200">
+                      {f.repo} {refOf(f)}
+                    </Text>
+                  </a>
+                  <Text font="monospace" size="100" variant="muted">
+                    {f.estimatedMinPerWeek ? `~${fmt(f.estimatedMinPerWeek)} min/wk · ` : ''}merged{' '}
+                    {shortDate(syncOf(f).mergedAt)}
+                  </Text>
+                </div>
+                {f.response && (
+                  <Text as="p" size="200" variant="muted" className={styles.ledgerQuote}>
+                    “{f.response.quote}” <InlineLink href={f.response.url}>@{f.response.author}</InlineLink>
+                  </Text>
+                )}
+              </li>
+            ))}
+          </ul>
+        </Grid.Column>
+      </Grid>
+    </article>
+  )
+}
+
+type Badge = { text: string; color: LabelProps['color']; icon: ReactNode }
+
+const badgeOf = (f: Finding): Badge => {
+  const { status, review } = syncOf(f)
+  if (f.status === 'fixed') return { text: 'Fixed by maintainers', color: 'green', icon: <CheckCircleIcon /> }
+  if (f.status === 'held') return { text: 'Held', color: 'yellow', icon: <CommentDiscussionIcon /> }
+  if (f.status === 'blocked') return { text: 'Issue filed', color: 'orange', icon: <CommentDiscussionIcon /> }
+  if (status === 'closed') return { text: 'Declined', color: 'gray', icon: <GitPullRequestClosedIcon /> }
+  if (review === 'approved') return { text: 'Approved', color: 'green', icon: <GitPullRequestIcon /> }
+  if (review === 'changes') return { text: 'Changes requested', color: 'yellow', icon: <GitPullRequestIcon /> }
+  if (status === 'draft') return { text: 'Draft', color: 'gray', icon: <GitPullRequestIcon /> }
+  return { text: 'In review', color: 'blue', icon: <GitPullRequestIcon /> }
+}
+
+const CompactRow = ({ finding, quiet }: { finding: Finding; quiet?: boolean }) => {
+  const { repo, title, problem, note, estimatedMinPerWeek, pattern, fixedBy } = finding
+  const { text, color, icon } = badgeOf(finding)
+  return (
+    <article className={`${styles.compact} ${quiet ? styles.quiet : ''}`}>
+      <div className={styles.compactMain}>
+        <div className={styles.compactMeta}>
+          <Label size="small" color={color} leadingVisual={icon}>
+            {text}
+          </Label>
+          <Text font="monospace" size="100" variant="muted">
+            {repo} {refOf(finding)}
+            {pattern && ` · ${pattern}`}
+          </Text>
+        </div>
+        <Heading as="h3" size="6" weight="semibold">
+          <a href={hrefOf(finding)} className={styles.titleLink}>
+            {title}
+          </a>
+        </Heading>
+        <Text as="p" size="200" variant="muted">
+          {quiet ? note ?? problem : problem}
+          {fixedBy && (
+            <>
+              {' '}
+              <InlineLink href={`https://github.com/${repo}/pull/${fixedBy}`}>Fix #{fixedBy}</InlineLink>
+            </>
+          )}
+        </Text>
+        <Quote finding={finding} />
+      </div>
+      {estimatedMinPerWeek && (
+        <div className={styles.compactStat}>
+          <Text font="monospace" size="400" weight="semibold" className={quiet ? undefined : styles.accent}>
+            ~{fmt(estimatedMinPerWeek)}
+          </Text>
+          <Text font="monospace" size="100" variant="muted">
+            min/wk (est.)
+          </Text>
+        </div>
+      )}
+    </article>
+  )
+}
 
 const steps = [
   { icon: SearchIcon, title: 'Find', body: 'Shortlist the busiest public repos and their heaviest workflows.' },
-  {
-    icon: GraphIcon,
-    title: 'Measure',
-    body: 'Pull real runs, jobs and step timing from the public Actions API. Separate queue time, wall clock, job minutes and waste.',
-  },
-  {
-    icon: ToolsIcon,
-    title: 'Fix',
-    body: 'Pick the strongest finding and write the smallest diff that removes it. Fail open: when in doubt, run everything.',
-  },
-  { icon: RocketIcon, title: 'Ship', body: "Validate on a fork where possible, then open a short PR that follows the repo's template." },
+  { icon: GraphIcon, title: 'Measure', body: 'Pull runs, jobs and step timing from the public Actions API.' },
+  { icon: ToolsIcon, title: 'Fix', body: 'Write the smallest diff that removes the waste. When in doubt, run everything.' },
+  { icon: RocketIcon, title: 'Ship', body: "Validate on a fork where possible, then open a short PR in the repo's format." },
 ]
 
 const rules = [
   ['Structural waste over red builds.', 'A workflow that mostly fails needs a diagnosis, not a CI tweak.'],
-  ['Measured vs estimated, always labeled.', 'Measured numbers come from a stated window of real runs. Estimates project them forward.'],
-  ["Don't change what a project means to test.", 'Changes that alter coverage on purpose go to maintainers as findings, not PRs.'],
+  ['Measured vs estimated, always labeled.', 'Measured numbers come from a stated window of real runs.'],
+  ["Don't change what a project means to test.", 'Coverage trade-offs go to maintainers as findings, not PRs.'],
   ['Short PRs.', 'Problem, fix, how it was tested. The diff does the talking.'],
-  ['Minutes, not dollars.', 'Public repos run free on standard GitHub-hosted runners. The win is capacity and faster queues.'],
+  ['Minutes, not dollars.', 'Public repos run free on standard hosted runners. The win is capacity.'],
 ]
 
 const App = () => {
-  const stats = [
-    [`${prs.length}`, 'PRs opened'],
-    [`${merged.length}`, 'merged'],
-    [`${approved.length}`, 'approved, awaiting merge'],
-    [`~${fmt(sumMinutes(merged))}`, 'job-min/week saved by merged PRs (est.)'],
-  ]
+  const [colorMode, setColorMode] = useState<'dark' | 'light'>('dark')
+  const isDark = colorMode === 'dark'
 
   return (
-    <main className={styles.page}>
-      <PageHeader>
-        <PageHeader.TitleArea>
-          <PageHeader.Title as="h1">Optimizing GitHub Actions across open source</PageHeader.Title>
-        </PageHeader.TitleArea>
-      </PageHeader>
-      <Text as="p" className={styles.lede}>
-        AI agents scan busy public repos, measure where Actions minutes go, and send small PRs that cut the waste. Every
-        number here comes from public run history.
-      </Text>
-
-      <div className={styles.stats}>
-        {stats.map(([value, label]) => (
-          <div key={label} className={styles.stat}>
-            <span className={styles.statValue}>{value}</span>
-            <Text size="small" className={styles.muted}>
-              {label}
-            </Text>
+    <ThemeProvider colorMode={colorMode} className={styles.root}>
+      <nav className={styles.nav}>
+        <div className={`${styles.frame} ${styles.navInner}`}>
+          <Text font="monospace" size="200" weight="semibold">
+            <span className={styles.muted}>//</span> oss-actions-optimization
+          </Text>
+          <div className={styles.navLinks}>
+            <a href="#merged">Merged</a>
+            <a href="#review">In review</a>
+            <a href="#declined">Not merged</a>
+            <a href="#method">Method</a>
+            <Button
+              variant="subtle"
+              size="small"
+              hasArrow={false}
+              aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+              onClick={() => setColorMode(isDark ? 'light' : 'dark')}
+            >
+              {isDark ? <SunIcon /> : <MoonIcon />}
+            </Button>
           </div>
-        ))}
-      </div>
+        </div>
+      </nav>
 
-      <Section title="Pull requests">
-        <Stack gap="normal">
-          {prs.map((f) => (
-            <FindingCard key={`${f.repo}:${f.title}`} finding={f} />
+      <main className={styles.frame}>
+        <Hero align="start" className={styles.hero}>
+          <Hero.Eyebrow>
+            <Eyebrow>
+              <span className={styles.muted}>//</span> <Accent>case study</Accent> · GitHub Actions in open source
+            </Eyebrow>
+          </Hero.Eyebrow>
+          <Hero.Heading size="display" font="monospace" weight="semibold" letterSpacing="condensed" fullWidth>
+            From public run data to <Accent>fixes merged upstream.</Accent>
+          </Hero.Heading>
+          <Hero.Description variant="muted">
+            AI agents measured where {stats.repos} popular open source repos spend their GitHub Actions minutes, then
+            sent small PRs to cut the waste. Maintainers made every merge decision.
+          </Hero.Description>
+          <Hero.PrimaryAction href="#featured">Read the merged cases</Hero.PrimaryAction>
+          <Hero.SecondaryAction href={skill}>Get the skill</Hero.SecondaryAction>
+        </Hero>
+
+        <Grid className={styles.stats}>
+          {[
+            [`${stats.merged}`, 'PRs merged upstream'],
+            [`~${fmt(stats.mergedMinutes)}`, 'job-min/week cut by merged PRs (est.)'],
+            [`${stats.mergeRate}%`, `of decided PRs merged (${stats.merged} of ${stats.decided})`],
+            [`${stats.inReview}`, `PRs in review, ${stats.approved} approved`],
+          ].map(([value, label]) => (
+            <Grid.Column key={label} span={{ xsmall: 6, large: 3 }}>
+              <Statistic variant="boxed" padding="normal" size="medium">
+                <Statistic.Heading>{value}</Statistic.Heading>
+                <Statistic.Description variant="muted">{label}</Statistic.Description>
+              </Statistic>
+            </Grid.Column>
           ))}
-        </Stack>
-      </Section>
+        </Grid>
 
-      <Section title="Found, not shipped by us">
-        <Stack gap="normal">
-          {held.map((f) => (
-            <FindingCard key={`${f.repo}:${f.title}`} finding={f} />
+        {featured && <Featured finding={featured} />}
+
+        <section id="merged" className={styles.section}>
+          <SectionHead index="02" label="Merged upstream" aside={<Eyebrow>Problem · fix · evidence</Eyebrow>}>
+            Different repos. <Accent>Same bar: maintainers merged it.</Accent>
+          </SectionHead>
+          {mergedCases.map((f) => (
+            <CaseRow key={`${f.repo}#${f.pr}`} finding={f} />
+          ))}
+          {repeatPatterns.map(({ pattern, list }) => (
+            <PatternGroup key={pattern} pattern={pattern} list={list} />
+          ))}
+        </section>
+
+        <section id="review" className={styles.section}>
+          <SectionHead index="03" label="In review" aside={<Eyebrow>Live PR state</Eyebrow>}>
+            {stats.inReview} more PRs, <Accent>waiting on maintainers.</Accent>
+          </SectionHead>
+          {inReview.map((f) => (
+            <CompactRow key={`${f.repo}#${f.pr}`} finding={f} />
           ))}
           {scanning.length > 0 && (
-            <Stack direction="horizontal" align="center" gap="condensed">
-              <Spinner size="small" />
-              <Text className={styles.muted}>In progress: {scanning.map(({ repo }) => repo).join(', ')}</Text>
-            </Stack>
+            <Text as="p" font="monospace" size="100" variant="muted" className={styles.footnote}>
+              Scanning: {scanning.map(({ repo }) => repo).join(', ')}
+            </Text>
           )}
-        </Stack>
-      </Section>
+        </section>
 
-      <Section title="How it works">
-        <Timeline>
-          {steps.map(({ icon: Icon, title, body }) => (
-            <Timeline.Item key={title}>
-              <Timeline.Badge>
-                <Icon />
-              </Timeline.Badge>
-              <Timeline.Body>
-                <Text weight="semibold">{title}.</Text> {body}
-              </Timeline.Body>
-            </Timeline.Item>
+        <section id="declined" className={styles.section}>
+          <SectionHead index="04" label="Not merged">
+            Not every fix lands. <span className={styles.muted}>Here's what didn't, and why.</span>
+          </SectionHead>
+          {[...declined, ...notShipped].map((f) => (
+            <CompactRow key={`${f.repo}:${f.title}`} finding={f} quiet />
           ))}
-        </Timeline>
-        <Text as="p">
-          The agents follow the public <Link href={data.skill}>actions-optimization skill</Link>.
-        </Text>
-      </Section>
+        </section>
 
-      <Section title="Rules we hold ourselves to">
-        <ul className={styles.list}>
-          {rules.map(([lead, rest]) => (
-            <li key={lead}>
-              <CheckIcon className={styles.muted} /> <Text weight="semibold">{lead}</Text> {rest}
-            </li>
-          ))}
-        </ul>
-      </Section>
+        <section id="method" className={styles.section}>
+          <SectionHead
+            index="05"
+            label="Method"
+            aside={
+              <Link href={skill} size="small" variant="accent" arrowDirection="none">
+                actions-optimization skill ↗
+              </Link>
+            }
+          >
+            Four steps. <Accent>Public data only.</Accent>
+          </SectionHead>
+          <Grid className={styles.grid}>
+            {steps.map(({ icon, title, body }) => (
+              <Grid.Column key={title} span={{ xsmall: 12, medium: 6, large: 3 }}>
+                <Pillar>
+                  <Pillar.Icon icon={icon} />
+                  <Pillar.Heading as="h3">{title}</Pillar.Heading>
+                  <Pillar.Description>{body}</Pillar.Description>
+                </Pillar>
+              </Grid.Column>
+            ))}
+          </Grid>
+          <ol className={styles.rules}>
+            {rules.map(([lead, rest], i) => (
+              <li key={lead}>
+                <Text font="monospace" size="100" className={styles.accent}>
+                  {String(i + 1).padStart(2, '0')}
+                </Text>
+                <Text as="p" size="300">
+                  <Text weight="semibold">{lead}</Text> <Text variant="muted">{rest}</Text>
+                </Text>
+              </li>
+            ))}
+          </ol>
+        </section>
 
-      <Text as="p" size="small" className={`${styles.section} ${styles.muted}`}>
-        Updated {data.updated}. PR states synced {prState.syncedAt.slice(0, 16).replace('T', ' ')} UTC. Source:{' '}
-        <Link href={REPO_URL}>austenstone/oss-actions-optimization</Link>
-      </Text>
-    </main>
+        <section className={`${styles.section} ${styles.cta}`}>
+          <Heading as="h2" size="3" font="monospace" weight="semibold" letterSpacing="condensed">
+            Run the same playbook <Accent>on your repo.</Accent>
+          </Heading>
+          <div className={styles.ctaActions}>
+            <Button as="a" href={skill} variant="primary">
+              Get the actions-optimization skill
+            </Button>
+            <Button as="a" href={REPO_URL} variant="secondary">
+              View the source
+            </Button>
+          </div>
+        </section>
+
+        <footer className={styles.footer}>
+          <Text font="monospace" size="100" variant="muted">
+            Updated {updated} · PR states synced {syncedAt.slice(0, 16).replace('T', ' ')} UTC · Every number comes from
+            public GitHub Actions run history.
+          </Text>
+        </footer>
+      </main>
+    </ThemeProvider>
   )
 }
 

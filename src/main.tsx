@@ -1,5 +1,6 @@
+import '@primer/react-brand/fonts/fonts.css'
+import '@primer/react-brand/lib/css/main.css'
 import './global.css'
-import { BaseStyles, ThemeProvider } from '@primer/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
@@ -9,10 +10,6 @@ if (!root) throw new Error('Missing #root')
 
 createRoot(root).render(
   <StrictMode>
-    <ThemeProvider colorMode="auto">
-      <BaseStyles>
-        <App />
-      </BaseStyles>
-    </ThemeProvider>
+    <App />
   </StrictMode>,
 )

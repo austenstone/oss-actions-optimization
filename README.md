@@ -45,7 +45,7 @@ npm run dev
 
 Then open http://localhost:5173/oss-actions-optimization/.
 
-The page is built with [Primer React](https://primer.style/product/getting-started/react/) and Vite.
+The page is built with [Primer Brand](https://primer.style/brand/getting-started/) and Vite.
 
 ## Data rules
 
