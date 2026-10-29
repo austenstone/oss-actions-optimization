@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-22",
+  "updated": "2026-10-29",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -414,7 +414,7 @@
       "fix": "Remove the section replay while keeping every assertion, then add a timeout sized to the real runtime.",
       "measured": "Sep 27 to Oct 10: ~7.7k min/week in hung jobs.",
       "estimatedMinPerWeek": 7700,
-      "note": "Maintainers confirmed all three daily jobs still hit the 6-hour limit and paused the schedule in antgroup/vsag#3134 (merged 2026-10-22) while they investigate the root cause.",
+      "note": "Maintainers confirmed all three daily jobs still hit the 6-hour limit and paused the schedule in antgroup/vsag#3134 (merged 2026-10-22) while they investigate the root cause. The fix is now tracked for v1.2.",
       "response": {
         "quote": "We will pause the scheduled workflow and investigate before restoring it.",
         "author": "wxyucs",
