@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-29",
+  "updated": "2026-11-09T16:01:37Z",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -246,7 +246,7 @@
     {
       "repo": "trycua/cua",
       "workflow": ".github/workflows/ci-cua-sdk.yml",
-      "status": "pr",
+      "status": "fixed",
       "pr": 5023,
       "title": "Restore Rust caches from main instead of saving per-PR",
       "pattern": "Cache thrashing",
@@ -259,7 +259,9 @@
         "quote": "The cache numbers make the case clearly, and the CLA is signed.",
         "author": "f-trycua",
         "url": "https://github.com/trycua/cua/pull/5023#issuecomment-6134331535"
-      }
+      },
+      "fixedBy": 5822,
+      "note": "Maintainers shipped the same fix more broadly: a new sccache-backed cache action where PRs restore main's entry and never save. Our PR was closed as superseded."
     },
     {
       "repo": "DataDog/dd-trace-py",
