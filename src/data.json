@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-10T16:53:42Z",
+  "updated": "2026-11-11T16:09:37Z",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -24,7 +24,8 @@
       "problem": "Every run starts 20 \"new and changed tests\" shards on 16-core runners. Groups fill from 1 to n, so a PR that touches one test file gets 16 shards that install deps and then print \"No added/changed tests detected\".",
       "fix": "The changes job counts changed test files per mode and emits only min(n, 5) groups. An empty matrix skips the job.",
       "measured": "Across 66 runs from Oct 4 to 10, 703 of 820 shard jobs finished in under a minute.",
-      "estimatedMinPerWeek": 11900
+      "estimatedMinPerWeek": 11900,
+      "note": "Rebased on 2026-11-11 after upstream merged its two deploy jobs into one matrix; awaiting review."
     },
     {
       "repo": "trinodb/trino",
