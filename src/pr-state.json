@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-11T16:09:44.310Z",
+  "syncedAt": "2026-11-13T19:02:02.497Z",
   "prs": {
     "payloadcms/payload#18663": {
       "status": "open",
@@ -82,7 +82,7 @@
       "mergedAt": null
     },
     "DataDog/dd-trace-py#20936": {
-      "status": "open",
+      "status": "closed",
       "review": "approved",
       "mergedAt": null
     },

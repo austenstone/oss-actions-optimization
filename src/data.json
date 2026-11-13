@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-11T16:09:37Z",
+  "updated": "2026-11-13T19:01:55Z",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -163,7 +163,7 @@
       "fix": "Allow two blind reruns instead of three. The third rerun rescued only 8 of 63 runs (13%), and dropping it turns deterministic failures red about 9 minutes sooner.",
       "measured": "Oct 4 to 11: 58 of 599 CI runs reached attempt 4 and 46 still failed. In 8 of 9 sampled runs, the same jobs failed on every attempt.",
       "estimatedMinPerWeek": 1000,
-      "note": "About 8 PRs a week will need a manual rerun.",
+      "note": "About 8 PRs a week will need a manual rerun. Rebased on 2026-11-13 onto upstream's split PR and main rerun policies; awaiting review.",
       "pr": 20914
     },
     {
@@ -276,7 +276,7 @@
       "measured": "774 PR runs/week, 0 cancelled, 190 superseded runs finished anyway at ~267 job-min each (sampled n=30).",
       "estimatedMinPerWeek": 51000,
       "pctOfRepo": 7,
-      "note": "Approved by a maintainer. Waiting on a changelog label before merge."
+      "note": "Approved by a maintainer, but the changelog label was never added; the stale bot auto-closed it on 2026-11-13."
     },
     {
       "repo": "swiftlang/github-workflows",
