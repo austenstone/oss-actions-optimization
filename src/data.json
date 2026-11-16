@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-13T19:01:55Z",
+  "updated": "2026-11-16T16:18:19Z",
   "skill": "https://github.com/austenstone/.copilot/tree/main/plugins/actions/skills/actions-optimization",
   "findings": [
     {
@@ -465,7 +465,7 @@
       "measured": "Oct 5 to 12: 84 stable-branch firings covered only 27 distinct HEADs; 57 re-tested the previous HEAD.",
       "estimatedMinPerWeek": 360000,
       "pctOfRepo": 27,
-      "note": "Builds on the review of cilium/cilium#49001, using run history instead of the Actions cache. If the lookup fails, the branch is dispatched as before.",
+      "note": "Builds on the review of cilium/cilium#49001, using run history instead of the Actions cache. If the lookup fails, the branch is dispatched as before. No review yet; the stale bot flagged it on 2026-11-16.",
       "pr": 49377
     },
     {
